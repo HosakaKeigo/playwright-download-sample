@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, Download } from '@playwright/test';
 import OmikujiPage from './Omikuji.page';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -15,12 +15,19 @@ test.describe("おみくじを引いた後のダウンロード", () => {
   })
 
   test("ブラウザに表示された結果がファイルに保存されること", async ({ page }) => {
+    const downloads: Download[] = [];
+    page.on('download', (download: Download) => {
+      downloads.push(download);
+    });
+
     const omikujiPage = new OmikujiPage(page);
     await omikujiPage.open();
 
-    const downloadPromise = page.waitForEvent('download');
     await omikujiPage.drawUltraOmikuji();
-    const download = await downloadPromise;
-    await download.saveAs(path.join(savePath, download.suggestedFilename()));
+    await page.waitForTimeout(500);
+
+    for await (const download of downloads) {
+      await download.saveAs(path.join(savePath, download.suggestedFilename()));
+    }
   })
 })
