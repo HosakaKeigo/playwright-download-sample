@@ -42,6 +42,11 @@ test.describe("おみくじを引いた後のダウンロード", () => {
 
     const fileContents = readFilesInDirectory(savePath);
     expect(fileContents).toHaveLength(5);
+
+    // ブラウザに表示された結果と比較
+    const result = await omikujiPage.getResult();
+    expect(fileContents.join(", ")).toBe(result);
+
     for (const fileContent of fileContents) {
       console.log(fileContent); // 大吉出るかな...?
       expect(fileContent).toMatch(/大吉|吉|中吉|小吉|末吉|凶|大凶/);
