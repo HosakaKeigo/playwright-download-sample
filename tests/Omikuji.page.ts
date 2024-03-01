@@ -8,8 +8,13 @@ export default class OmikujiPage {
   }
 
   async drawOmikuji() {
-    const omikujiButton = this.page.getByRole("button", { name: "おみくじを引く" });
+    const omikujiButton = this.page.getByRole("button", { name: "おみくじを引く" }).first();
     await omikujiButton.click();
+  }
+
+  async drawUltraOmikuji() {
+    const ultraOmikujiButton = this.page.getByRole("button", { name: "おみくじを引く" }).last();
+    await ultraOmikujiButton.click();
   }
 
   async getResult() {
